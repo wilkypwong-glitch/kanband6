@@ -55,6 +55,80 @@ button { cursor: pointer; }
 .filters label { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); gap: var(--s1); }
 .filters input, .filters select { padding: var(--s2); border: 1px solid var(--line); border-radius: var(--radius); background: #fff; min-width: 170px; }
 
+/* ===== Dashboard ===== */
+.dash { padding: var(--s5) var(--s5) 0; }
+.dash-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s3); margin-bottom: var(--s3); }
+.dash-head h2 { margin: 0; font-size: 18px; color: var(--blue-900); }
+.dash-head p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.dash-grid { display: grid; gap: var(--s4); grid-template-columns: minmax(240px, 1fr) minmax(0, 1.3fr) minmax(0, 1.3fr);
+  grid-template-areas: "hero flow flow" "proj proj work" "risk risk attn"; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s4); min-width: 0; }
+.panel h3 { margin: 0 0 var(--s1); font-size: 14px; color: var(--blue-900); }
+.panel .sub { margin: 0 0 var(--s3); font-size: 12px; color: var(--muted); }
+.p-hero { grid-area: hero; background: var(--blue-900); border-color: var(--blue-900); color: #fff; display: flex; flex-direction: column; gap: var(--s4); }
+.p-hero h3 { color: #fff; }
+.p-hero .sub { color: #b9cde4; }
+.p-flow { grid-area: flow; } .p-proj { grid-area: proj; } .p-work { grid-area: work; }
+.p-risk { grid-area: risk; } .p-attn { grid-area: attn; }
+
+.ring { --p: 0; width: 132px; height: 132px; border-radius: 50%; display: grid; place-items: center;
+  background: conic-gradient(#6fb1f2 calc(var(--p) * 1%), rgba(255,255,255,0.16) 0); }
+.ring-in { width: 98px; height: 98px; border-radius: 50%; background: var(--blue-900); display: grid; place-items: center; text-align: center; }
+.ring-num { font-family: Georgia, "Times New Roman", serif; font-size: 34px; line-height: 1; }
+.ring-lbl { display: block; font-size: 12px; color: #b9cde4; margin-top: 2px; }
+.hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); margin: 0; }
+.hero-stats div { border-top: 1px solid rgba(255,255,255,0.25); padding-top: var(--s2); }
+.hero-stats dt { font-size: 12px; color: #b9cde4; }
+.hero-stats dd { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 26px; }
+.hero-stats .bad dd { color: #ff9b9b; }
+
+.stack { display: flex; height: 22px; border-radius: 4px; overflow: hidden; background: var(--blue-50); gap: 2px; }
+.seg { min-width: 4px; transform-origin: left; }
+.s-Backlog { background: var(--grey); } .s-In-Progress { background: var(--blue-600); }
+.s-Blocked { background: var(--amber); } .s-Done { background: var(--green); }
+.legend { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); list-style: none; margin: var(--s3) 0 0; padding: 0; font-size: 13px; }
+.legend li { display: flex; align-items: center; gap: var(--s2); }
+.swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+.rows { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s3); }
+.rows li { display: grid; grid-template-columns: minmax(110px, 0.9fr) 1.6fr auto; gap: var(--s3); align-items: center; font-size: 13px; }
+.rows .name { overflow-wrap: anywhere; font-weight: 600; }
+.rows .val { color: var(--muted); font-size: 12px; white-space: nowrap; text-align: right; }
+.rows .stack { height: 12px; }
+.track { height: 12px; background: var(--blue-50); border-radius: 4px; display: flex; overflow: hidden; }
+.fill-open { background: var(--blue-600); } .fill-late { background: var(--red); }
+.empty-note { color: var(--muted); font-size: 13px; margin: 0; }
+
+.heat { width: 100%; border-collapse: separate; border-spacing: 3px; font-size: 13px; }
+.heat th { font-weight: 600; font-size: 12px; color: var(--muted); text-align: center; padding: var(--s1); }
+.heat th.rowh { text-align: left; color: var(--ink); white-space: nowrap; }
+.heat td { text-align: center; padding: var(--s2) var(--s1); border-radius: 4px; font-weight: 700; background: var(--blue-50); color: var(--muted); }
+.heat td.r-low { background: var(--blue-100); color: var(--blue-900); }
+.heat td.r-med { background: var(--amber-bg); color: #6b4200; }
+.heat td.r-high { background: #f6c9a8; color: #5c2600; }
+.heat td.r-crit { background: var(--red); color: #fff; }
+.risk-foot { margin: var(--s3) 0 0; font-size: 12px; color: var(--muted); }
+.risk-foot strong { color: var(--ink); }
+
+.attn { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+.attn li { display: grid; gap: 2px; padding: var(--s2) var(--s3); border-left: 4px solid var(--blue-600); background: var(--blue-50); border-radius: 0 var(--radius) var(--radius) 0; font-size: 13px; }
+.attn li.Critical { border-left-color: var(--red); } .attn li.High { border-left-color: var(--amber); }
+.attn .t { font-weight: 600; overflow-wrap: anywhere; }
+.attn .m { color: var(--muted); font-size: 12px; }
+
+@keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.dash.intro .seg, .dash.intro .track > span { animation: grow 600ms ease-out both; transform-origin: left; }
+@media (prefers-reduced-motion: reduce) { .dash.intro .seg, .dash.intro .track > span { animation: none; } }
+@media (max-width: 1000px) {
+  .dash-grid { grid-template-columns: 1fr 1fr; grid-template-areas: "hero flow" "proj proj" "work work" "risk risk" "attn attn"; }
+}
+@media (max-width: 640px) {
+  .dash { padding: var(--s3) var(--s3) 0; }
+  .dash-grid { grid-template-columns: 1fr; grid-template-areas: "hero" "flow" "proj" "work" "risk" "attn"; }
+  .rows li { grid-template-columns: 1fr auto; }
+  .rows li .stack, .rows li .track { grid-column: 1 / -1; grid-row: 2; }
+}
+
 /* ===== Board ===== */
 .board { display: flex; gap: var(--s4); padding: var(--s5); align-items: flex-start; }
 .column { flex: 1 1 0; min-width: 0; background: var(--blue-50); border: 2px solid transparent; border-radius: var(--radius); padding: var(--s3); min-height: 200px; }
@@ -142,6 +216,8 @@ button { cursor: pointer; }
   </label>
   <button type="button" class="btn secondary" id="clearFilters">Clear filters</button>
 </section>
+
+<section class="dash intro" id="dash" aria-label="Portfolio dashboard"></section>
 
 <main class="board" id="board" aria-label="Kanban board"></main>
 
@@ -236,7 +312,7 @@ const state = {
   filters: { project: "", assignee: "", priority: "" }
 };
 // UI-only flags (which card shows delete-confirm / move picker, drag id)
-const ui = { confirmDeleteId: null, moveOpenId: null, dragId: null };
+const ui = { confirmDeleteId: null, moveOpenId: null, dragId: null, dashOpen: true, dashShown: false };
 let idCounter = 0;
 
 /* ===================================================================
@@ -358,7 +434,151 @@ function renderBoard() {
       '</div></section>';
   }).join("");
   renderSummary();
+  renderDashboard();
 }
+
+/* ===================================================================
+   DASHBOARD — derived entirely from state.tasks (respects filters).
+   Risk = impact (priority weight) x likelihood (overdue > blocked >
+   due within 7 days > on track), the usual qualitative risk matrix.
+   =================================================================== */
+const IMPACT = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+const LIKELIHOOD_COLS = ["On track", "Due in 7 days", "Blocked", "Overdue"];
+const DUE_SOON_DAYS = 7;
+
+function daysUntil(iso) {
+  return Math.round((Date.parse(iso) - Date.parse(todayISO())) / 86400000);
+}
+function likelihoodIndex(t) {
+  if (isOverdue(t)) return 3;
+  if (t.status === "Blocked") return 2;
+  if (daysUntil(t.dueDate) <= DUE_SOON_DAYS) return 1;
+  return 0;
+}
+function riskScore(t) { return IMPACT[t.priority] * (likelihoodIndex(t) + 1); }
+function riskClass(score) { return score >= 12 ? "r-crit" : score >= 6 ? "r-high" : score >= 3 ? "r-med" : "r-low"; }
+function statusClass(s) { return "s-" + s.replace(/ /g, "-"); }
+function plural(n, word) { return n + " " + word + (n === 1 ? "" : "s"); }
+
+function stackBar(tasks) {
+  return '<div class="stack" aria-hidden="true">' + STATUSES.map(function (s) {
+    const n = tasks.filter(function (t) { return t.status === s; }).length;
+    return n ? '<span class="seg ' + statusClass(s) + '" style="flex-grow:' + n + '"></span>' : "";
+  }).join("") + '</div>';
+}
+
+function renderDashboard() {
+  const el = document.getElementById("dash");
+  const visible = applyFilters();
+  const total = visible.length;
+  const done = visible.filter(function (t) { return t.status === "Done"; }).length;
+  const open = visible.filter(function (t) { return t.status !== "Done"; });
+  const overdue = open.filter(isOverdue).length;
+  const blocked = open.filter(function (t) { return t.status === "Blocked"; }).length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const exposure = open.reduce(function (sum, t) { return sum + riskScore(t); }, 0);
+
+  let html = '<div class="dash-head"><div><h2>Portfolio overview</h2>' +
+    '<p>Showing ' + total + ' of ' + state.tasks.length + ' tasks' + (total === state.tasks.length ? '' : ' (filters applied)') + '</p></div>' +
+    '<button type="button" class="btn secondary" data-dash="toggle" aria-expanded="' + ui.dashOpen + '" aria-controls="dashGrid">' +
+    (ui.dashOpen ? "Hide dashboard" : "Show dashboard") + '</button></div>';
+
+  if (!ui.dashOpen) { el.innerHTML = html; return; }
+  if (!total) {
+    el.innerHTML = html + '<p class="panel empty-note">No tasks match these filters. Clear the filters to see the portfolio.</p>';
+    return;
+  }
+
+  // Delivery health (hero)
+  const hero = '<section class="panel p-hero" aria-label="Delivery health">' +
+    '<div><h3>Delivery health</h3><p class="sub">Share of tasks closed</p></div>' +
+    '<div class="ring" style="--p:' + pct + '" role="img" aria-label="' + pct + ' percent complete"><div class="ring-in"><div>' +
+    '<span class="ring-num">' + pct + '%</span><span class="ring-lbl">' + done + ' of ' + total + ' done</span></div></div></div>' +
+    '<dl class="hero-stats"><div><dt>Open</dt><dd>' + open.length + '</dd></div>' +
+    '<div class="' + (blocked ? "bad" : "") + '"><dt>Blocked</dt><dd>' + blocked + '</dd></div>' +
+    '<div class="' + (overdue ? "bad" : "") + '"><dt>Overdue</dt><dd>' + overdue + '</dd></div></dl></section>';
+
+  // Status flow
+  const flow = '<section class="panel p-flow" aria-label="Status flow"><h3>Where work sits</h3>' +
+    '<p class="sub">Every task by board column</p>' + stackBar(visible) +
+    '<ul class="legend">' + STATUSES.map(function (s) {
+      const n = visible.filter(function (t) { return t.status === s; }).length;
+      return '<li><span class="swatch ' + statusClass(s) + '"></span>' + escapeHtml(s) + ' <strong>' + n + '</strong></li>';
+    }).join("") + '</ul></section>';
+
+  // Project health
+  const projRows = PROJECTS.map(function (p) {
+    const items = visible.filter(function (t) { return t.project === p; });
+    return { name: p, items: items, late: items.filter(isOverdue).length,
+      open: items.filter(function (t) { return t.status !== "Done"; }).length };
+  }).filter(function (r) { return r.items.length; })
+    .sort(function (a, b) { return b.late - a.late || b.open - a.open; });
+  const proj = '<section class="panel p-proj" aria-label="Project health"><h3>Project health</h3>' +
+    '<p class="sub">Status mix per project, most overdue first</p><ul class="rows">' +
+    projRows.map(function (r) {
+      return '<li><span class="name">' + escapeHtml(r.name) + '</span>' + stackBar(r.items) +
+        '<span class="val">' + plural(r.items.length, "task") + (r.late ? ' · <strong style="color:var(--red)">' + r.late + ' overdue</strong>' : '') + '</span></li>';
+    }).join("") + '</ul></section>';
+
+  // Workload
+  const byPerson = {};
+  open.forEach(function (t) {
+    const k = t.assignee;
+    byPerson[k] = byPerson[k] || { open: 0, late: 0 };
+    byPerson[k].open += 1;
+    if (isOverdue(t)) byPerson[k].late += 1;
+  });
+  const people = Object.keys(byPerson).sort(function (a, b) { return byPerson[b].open - byPerson[a].open || a.localeCompare(b); });
+  const maxOpen = people.length ? byPerson[people[0]].open : 1;
+  const work = '<section class="panel p-work" aria-label="Workload"><h3>Workload</h3>' +
+    '<p class="sub">Open tasks per assignee; red is overdue</p>' +
+    (people.length ? '<ul class="rows">' + people.map(function (n) {
+      const p = byPerson[n];
+      return '<li><span class="name">' + escapeHtml(n) + '</span><div class="track" aria-hidden="true">' +
+        (p.open - p.late ? '<span class="fill-open" style="width:' + ((p.open - p.late) / maxOpen * 100) + '%"></span>' : '') +
+        (p.late ? '<span class="fill-late" style="width:' + (p.late / maxOpen * 100) + '%"></span>' : '') +
+        '</div><span class="val">' + p.open + ' open' + (p.late ? ', ' + p.late + ' late' : '') + '</span></li>';
+    }).join("") + '</ul>' : '<p class="empty-note">Nothing open. Everyone is clear.</p>') + '</section>';
+
+  // Risk posture (impact x likelihood)
+  const grid = IMPACT_ORDER().map(function (pri) {
+    return '<tr><th class="rowh" scope="row">' + escapeHtml(pri) + '</th>' + LIKELIHOOD_COLS.map(function (c, ci) {
+      const n = open.filter(function (t) { return t.priority === pri && likelihoodIndex(t) === ci; }).length;
+      const cls = n ? riskClass(IMPACT[pri] * (ci + 1)) : "";
+      return '<td class="' + cls + '" aria-label="' + escapeHtml(pri) + ', ' + escapeHtml(c) + ': ' + n + '">' + n + '</td>';
+    }).join("") + '</tr>';
+  }).join("");
+  const cyber = open.filter(function (t) { return t.category === "Cybersecurity"; });
+  const cyberLate = cyber.filter(isOverdue).length;
+  const risk = '<section class="panel p-risk" aria-label="Risk posture"><h3>Risk posture</h3>' +
+    '<p class="sub">Open tasks by impact (priority) and likelihood of slipping</p>' +
+    '<table class="heat"><thead><tr><th></th>' + LIKELIHOOD_COLS.map(function (c) { return '<th scope="col">' + escapeHtml(c) + '</th>'; }).join("") +
+    '</tr></thead><tbody>' + grid + '</tbody></table>' +
+    '<p class="risk-foot">Risk exposure <strong>' + exposure + '</strong> (sum of impact × likelihood across open tasks). ' +
+    'Cybersecurity work: <strong>' + cyber.length + '</strong> open' + (cyberLate ? ', <strong style="color:var(--red)">' + cyberLate + ' overdue</strong>' : '') + '.</p></section>';
+
+  // Needs attention — top risks first, then earliest due date
+  const top = open.slice().sort(function (a, b) {
+    return riskScore(b) - riskScore(a) || (a.dueDate < b.dueDate ? -1 : 1);
+  }).slice(0, 5);
+  const attn = '<section class="panel p-attn" aria-label="Needs attention"><h3>Needs attention</h3>' +
+    '<p class="sub">Highest risk first</p>' +
+    (top.length ? '<ul class="attn">' + top.map(function (t) {
+      const d = daysUntil(t.dueDate);
+      const why = isOverdue(t) ? plural(-d, "day") + " overdue" : t.status === "Blocked" ? "Blocked, due " + formatDate(t.dueDate) : "Due " + formatDate(t.dueDate);
+      return '<li class="' + escapeHtml(t.priority) + '"><span class="t">' + escapeHtml(t.title) + '</span>' +
+        '<span class="m">' + escapeHtml(t.id) + ' · ' + escapeHtml(t.priority) + ' · ' + escapeHtml(t.assignee) + ' · ' + escapeHtml(why) + '</span></li>';
+    }).join("") + '</ul>' : '<p class="empty-note">No open tasks.</p>') + '</section>';
+
+  el.innerHTML = html + '<div class="dash-grid" id="dashGrid">' + hero + flow + proj + work + risk + attn + '</div>';
+  if (!ui.dashShown) {
+    ui.dashShown = true;
+    setTimeout(function () { el.classList.remove("intro"); }, 900);
+  } else {
+    el.classList.remove("intro");
+  }
+}
+function IMPACT_ORDER() { return PRIORITIES; }
 
 /* ===================================================================
    ACTIONS
@@ -615,6 +835,9 @@ function init() {
   seedTasks();
   initFilters();
   initBoardEvents();
+  document.getElementById("dash").addEventListener("click", function (e) {
+    if (e.target.closest('[data-dash="toggle"]')) { ui.dashOpen = !ui.dashOpen; renderDashboard(); }
+  });
   document.getElementById("openForm").addEventListener("click", openForm);
   document.getElementById("cancelForm").addEventListener("click", closeForm);
   backdrop.addEventListener("click", function (e) { if (e.target === backdrop) closeForm(); });
