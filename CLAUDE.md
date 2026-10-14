@@ -20,5 +20,7 @@ A single-file IT PMO Kanban demo/training app: `index.html` (markup, `<style>`, 
 - All card/board DOM is produced in `renderBoard()` / `renderCard()` / `renderSummary()` via string templates; every user-supplied value must go through `escapeHtml()`. Never mutate card DOM directly; change `state`/`ui` and re-render.
 - Board events use delegation on `#board` (click actions via `data-action`, native HTML5 drag/drop). Mutations go through `moveTask`, `deleteTask`, `addTask`.
 - Add-task flow (`handleSubmit`): validate → optimistic `addTask` + render → toast → `notifyNewTask` in try/catch. A FormSubmit failure must only show a warning toast, never break the board.
+- Security briefing dialog (`#briefBackdrop`): `init()` schedules `openBriefing` after `BRIEFING.delayMs` (10 s); it shows once per page load and the date is always the coming Monday. It owns Escape/Tab while open, so keep its check first in the `keydown` handler.
+- WhatsApp IT support widget (`#chat`, fixed bottom-right, z-index 9 so modals cover it): `CHAT` config (number + suggested queries) renders plain `https://wa.me/<number>?text=…` links; no script sends anything. Toasts sit above it (`bottom: 88px`). Escape closes it after the briefing/form checks. Keep query texts free of personal data (they go in the URL).
 - Task IDs are `UOB-ITPM-####` from an incrementing `idCounter` (seeded tasks consume the first IDs).
 - Seed due dates are computed relative to today, so overdue examples stay overdue.

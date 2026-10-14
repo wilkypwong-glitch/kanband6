@@ -25,6 +25,8 @@
   --grey: #8a96a3;
   --green: #1b7a3d;
   --green-bg: #e6f4ea;
+  --wa: #0e7c5a;
+  --wa-dark: #0a5c43;
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
   --radius: 6px;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -178,11 +180,39 @@ button { cursor: pointer; }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
 .form-actions { display: flex; justify-content: flex-end; gap: var(--s2); margin-top: var(--s4); }
 
+/* ===== Security briefing dialog ===== */
+.modal.brief { max-width: 460px; border-top: 6px solid var(--blue-600); }
+.brief-text { margin: 0 0 var(--s4); }
+.brief-facts { margin: 0; display: grid; gap: var(--s2); }
+.brief-facts div { display: grid; grid-template-columns: 64px 1fr; gap: var(--s3); padding: var(--s2) var(--s3); background: var(--blue-50); border-radius: var(--radius); }
+.brief-facts dt { color: var(--muted); font-size: 12px; }
+.brief-facts dd { margin: 0; font-weight: 600; }
+
 /* ===== Toasts ===== */
-.toasts { position: fixed; right: var(--s4); bottom: var(--s4); display: flex; flex-direction: column; gap: var(--s2); z-index: 20; max-width: 90vw; }
+.toasts { position: fixed; right: var(--s4); bottom: 88px; display: flex; flex-direction: column; gap: var(--s2); z-index: 20; max-width: 90vw; }
 .toast { padding: var(--s3) var(--s4); border-radius: var(--radius); background: var(--blue-900); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.25); border-left: 6px solid var(--blue-600); }
 .toast.success { border-left-color: var(--green); }
 .toast.warn { background: #5a3b00; border-left-color: var(--amber); }
+
+/* ===== WhatsApp IT support widget (below the modal backdrops, which are z-index 10) ===== */
+.chat { position: fixed; right: var(--s4); bottom: var(--s4); z-index: 9; }
+.chat-fab { width: 56px; height: 56px; border-radius: 50%; border: 0; padding: 0; background: var(--wa); color: #fff; display: grid; place-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+.chat-fab:hover { background: var(--wa-dark); }
+.chat-fab svg { width: 30px; height: 30px; fill: currentColor; }
+.chat-panel { position: absolute; right: 0; bottom: 68px; width: min(340px, calc(100vw - 2 * var(--s4))); max-height: calc(100vh - 110px); display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 6px 24px rgba(11,42,79,0.3); overflow: hidden; }
+.chat-panel[hidden] { display: none; }
+.chat-head { background: var(--wa-dark); color: #fff; padding: var(--s3) var(--s4); display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+.chat-head h2 { margin: 0; font-size: 15px; }
+.chat-head small { display: block; font-weight: 400; opacity: 0.9; font-size: 12px; }
+.chat-close { background: transparent; border: 0; color: #fff; font-size: 22px; line-height: 1; padding: var(--s1) var(--s2); border-radius: var(--radius); }
+.chat-close:hover { background: rgba(255,255,255,0.18); }
+.chat-body { padding: var(--s3) var(--s4) var(--s4); overflow-y: auto; background: var(--blue-50); }
+.chat-bubble { margin: 0 0 var(--s3); background: var(--surface); border: 1px solid var(--line); border-radius: 0 var(--radius) var(--radius) var(--radius); padding: var(--s2) var(--s3); }
+.chat-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+.chat-list a { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); padding: var(--s2) var(--s3); background: var(--surface); border: 1px solid var(--wa); border-radius: var(--radius); color: var(--wa-dark); font-weight: 600; text-decoration: none; }
+.chat-list a:hover { background: var(--green-bg); }
+.chat-list a::after { content: "\2197"; font-weight: 400; }
+.chat-foot { margin: var(--s3) 0 0; font-size: 12px; color: var(--muted); }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -275,6 +305,39 @@ button { cursor: pointer; }
   </section>
 </div>
 
+<!-- Security briefing announcement (opens once, BRIEFING.delayMs after load) -->
+<div class="backdrop" id="briefBackdrop">
+  <section class="modal brief" role="alertdialog" aria-modal="true" aria-labelledby="briefTitle" aria-describedby="briefText">
+    <h2 id="briefTitle">Company security briefing</h2>
+    <p class="brief-text" id="briefText">Please plan to attend the upcoming company security briefing.</p>
+    <dl class="brief-facts">
+      <div><dt>When</dt><dd id="briefWhen"></dd></div>
+      <div><dt>Where</dt><dd id="briefWhere"></dd></div>
+    </dl>
+    <div class="form-actions">
+      <button type="button" class="btn" id="briefOk">Got it</button>
+    </div>
+  </section>
+</div>
+
+<!-- WhatsApp IT support widget (suggestions are rendered from CHAT.queries) -->
+<aside class="chat" id="chat" aria-label="IT support chat">
+  <button type="button" class="chat-fab" id="chatFab" aria-expanded="false" aria-controls="chatPanel" aria-label="Chat with IT Support on WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.05-1.32A10 10 0 1 0 12 2zm0 1.8a8.2 8.2 0 1 1-4.2 15.25l-.3-.18-2.98.78.8-2.9-.2-.31A8.2 8.2 0 0 1 12 3.8zM8.9 7.5c-.2 0-.52.07-.8.37-.27.3-1.05 1.02-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.1 3.3 5.2 4.5 2.58 1 3.1.8 3.66.75.56-.05 1.8-.73 2.05-1.45.25-.7.25-1.32.18-1.45-.08-.12-.28-.2-.58-.35s-1.8-.88-2.07-.98c-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.18.2-.35.22-.65.07-.3-.15-1.28-.47-2.43-1.5-.9-.8-1.5-1.8-1.67-2.1-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.67-1.65-.92-2.25-.24-.58-.5-.5-.68-.5z"/></svg>
+  </button>
+  <section class="chat-panel" id="chatPanel" aria-labelledby="chatTitle" hidden>
+    <div class="chat-head">
+      <h2 id="chatTitle">IT Support<small>Chat on WhatsApp</small></h2>
+      <button type="button" class="chat-close" id="chatClose" aria-label="Close IT support chat">&times;</button>
+    </div>
+    <div class="chat-body">
+      <p class="chat-bubble">Hi! What do you need help with? Pick a topic and WhatsApp opens with your message ready to send.</p>
+      <ul class="chat-list" id="chatList"></ul>
+      <p class="chat-foot" id="chatFoot"></p>
+    </div>
+  </section>
+</aside>
+
 <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
 
 <script>
@@ -312,7 +375,7 @@ const state = {
   filters: { project: "", assignee: "", priority: "" }
 };
 // UI-only flags (which card shows delete-confirm / move picker, drag id)
-const ui = { confirmDeleteId: null, moveOpenId: null, dragId: null, dashOpen: true, dashShown: false };
+const ui = { confirmDeleteId: null, moveOpenId: null, dragId: null, dashOpen: true, dashShown: false, chatOpen: false };
 let idCounter = 0;
 
 /* ===================================================================
@@ -747,6 +810,75 @@ async function handleSubmit(ev) {
 }
 
 /* ===================================================================
+   SECURITY BRIEFING ANNOUNCEMENT
+   Opens once per page load, delayMs after the page loads. The date is
+   always the coming Monday, so it never goes stale. No persistence, so
+   a refresh shows it again (same as the rest of the demo).
+   =================================================================== */
+const BRIEFING = { delayMs: 10000, time: "10:00 AM", venue: "Town Hall room" };
+const briefBackdrop = document.getElementById("briefBackdrop");
+const briefOk = document.getElementById("briefOk");
+let briefLastFocus = null;
+
+function nextMonday() {
+  const d = new Date();
+  d.setDate(d.getDate() + ((1 - d.getDay() + 6) % 7) + 1);
+  return d;
+}
+
+function openBriefing() {
+  if (briefBackdrop.classList.contains("open")) return;
+  const when = nextMonday().toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "short", year: "numeric" });
+  document.getElementById("briefWhen").textContent = when + " at " + BRIEFING.time;
+  document.getElementById("briefWhere").textContent = BRIEFING.venue;
+  briefLastFocus = document.activeElement;
+  briefBackdrop.classList.add("open");
+  briefOk.focus();
+}
+function closeBriefing() {
+  briefBackdrop.classList.remove("open");
+  if (briefLastFocus && briefLastFocus.focus) briefLastFocus.focus();
+}
+
+/* ===================================================================
+   WHATSAPP IT SUPPORT WIDGET
+   Each suggestion is a plain link to wa.me with the question prefilled,
+   so nothing is sent from the page itself. Keep the texts free of
+   personal data: they travel in the URL.
+   =================================================================== */
+const CHAT = {
+  number: "6512345678",
+  display: "+65 1234 5678",
+  queries: [
+    { label: "Reset my password / account locked", text: "Hi IT Support, I need to reset my password or my account is locked." },
+    { label: "Can't connect to Wi-Fi or VPN", text: "Hi IT Support, I can't connect to the Wi-Fi / VPN." },
+    { label: "My laptop is slow or won't start", text: "Hi IT Support, my laptop is running slowly or won't start." },
+    { label: "Request software or system access", text: "Hi IT Support, I'd like to request software or system access." },
+    { label: "Email or MFA problem", text: "Hi IT Support, I'm having a problem with my email or multi-factor authentication." },
+    { label: "Report a suspicious email", text: "Hi IT Support, I'd like to report a suspicious or phishing email." },
+    { label: "Something else", text: "Hi IT Support, I need help with an IT issue." }
+  ]
+};
+const chatPanel = document.getElementById("chatPanel");
+const chatFab = document.getElementById("chatFab");
+
+function chatLink(q) {
+  return "https://wa.me/" + CHAT.number + "?text=" + encodeURIComponent(q.text);
+}
+function renderChat() {
+  document.getElementById("chatList").innerHTML = CHAT.queries.map(function (q) {
+    return '<li><a href="' + escapeHtml(chatLink(q)) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(q.label) + "</a></li>";
+  }).join("");
+  document.getElementById("chatFoot").textContent =
+    "Opens WhatsApp chat with IT Support (" + CHAT.display + "). Never share passwords or codes in chat.";
+}
+function setChat(open) {
+  ui.chatOpen = open;
+  chatPanel.hidden = !open;
+  chatFab.setAttribute("aria-expanded", String(open));
+}
+
+/* ===================================================================
    EVENT WIRING
    =================================================================== */
 function initFilters() {
@@ -841,10 +973,25 @@ function init() {
   document.getElementById("openForm").addEventListener("click", openForm);
   document.getElementById("cancelForm").addEventListener("click", closeForm);
   backdrop.addEventListener("click", function (e) { if (e.target === backdrop) closeForm(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && backdrop.classList.contains("open")) closeForm(); });
+  briefOk.addEventListener("click", closeBriefing);
+  briefBackdrop.addEventListener("click", function (e) { if (e.target === briefBackdrop) closeBriefing(); });
+  document.addEventListener("keydown", function (e) {
+    // The briefing sits on top of everything: it owns Escape and keeps Tab focus on its button.
+    if (briefBackdrop.classList.contains("open")) {
+      if (e.key === "Escape") closeBriefing();
+      else if (e.key === "Tab") { e.preventDefault(); briefOk.focus(); }
+      return;
+    }
+    if (e.key === "Escape" && backdrop.classList.contains("open")) closeForm();
+    else if (e.key === "Escape" && ui.chatOpen) { setChat(false); chatFab.focus(); }
+  });
+  chatFab.addEventListener("click", function () { setChat(!ui.chatOpen); });
+  document.getElementById("chatClose").addEventListener("click", function () { setChat(false); chatFab.focus(); });
+  renderChat();
   form.addEventListener("submit", handleSubmit);
   resetForm();
   renderBoard();
+  setTimeout(openBriefing, BRIEFING.delayMs);
 }
 init();
 </script>
