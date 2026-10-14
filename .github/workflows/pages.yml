@@ -29,8 +29,8 @@ jobs:
           check "Dynamic code execution is banned" '\beval\(|new Function\(|document\.write\(' index.html
           check "!important is banned" '!important' index.html
           check "External script/stylesheet/font/image" '<script[^>]+src=|<link[^>]+href=|@import|url\(https?:' index.html
-          # Only the FormSubmit endpoint may be referenced
-          if grep -oE 'https?://[^"'"'"' )<>]+' index.html | grep -vE '^https://formsubmit\.co(/ajax/|;)'; then
+          # Only the FormSubmit endpoint and the WhatsApp (wa.me) support link may be referenced
+          if grep -oE 'https?://[^"'"'"' )<>]+' index.html | grep -vE '^https://(formsubmit\.co(/ajax/|;)|wa\.me/)'; then
             echo "::error::Unexpected external URL"; fail=1
           fi
           exit $fail
