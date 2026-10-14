@@ -7,16 +7,41 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  security-scan:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan for secrets, banned APIs and external resources
+        run: |
+          fail=0
+          check() { # $1 = description, $2 = regex, $3.. = files
+            desc="$1"; re="$2"; shift 2
+            if grep -nE "$re" "$@"; then echo "::error::$desc"; fail=1; fi
+          }
+          check "Possible secret or token" 'ghp_[A-Za-z0-9]{20,}|gho_[A-Za-z0-9]{20,}|github_pat_|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY|(api[_-]?key|secret|password)[[:space:]]*[:=][[:space:]]*["'"'"'][^"'"'"']{6,}' index.html README.md
+          check "Browser persistence is banned" 'localStorage|sessionStorage|indexedDB|document\.cookie' index.html
+          check "Dynamic code execution is banned" '\beval\(|new Function\(|document\.write\(' index.html
+          check "!important is banned" '!important' index.html
+          check "External script/stylesheet/font/image" '<script[^>]+src=|<link[^>]+href=|@import|url\(https?:' index.html
+          # Only the FormSubmit endpoint may be referenced
+          if grep -oE 'https?://[^"'"'"' )<>]+' index.html | grep -vE '^https://formsubmit\.co(/ajax/|;)'; then
+            echo "::error::Unexpected external URL"; fail=1
+          fi
+          exit $fail
+
+  deploy:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
